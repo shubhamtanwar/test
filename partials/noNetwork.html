@@ -1,0 +1,72 @@
+<style>
+.headerFooterBg, .footerGroupIcons {
+  display: none !important;
+}
+.fixButonSize{height: 34px;
+width: 128px;position: relative;}
+#floatingBarsG {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    margin: auto;
+    top: 3px;
+    bottom: 0;
+    left: -8px;
+    right: 0;
+}
+
+.blockG {
+    width: 3px;
+    height: 7px;
+}
+
+#rotateG_01 {
+    left: 3px;
+    top: 2px;
+}
+
+   #rotateG_02 {
+    left: 5px;
+    top: -5px;
+  }
+
+   #rotateG_03 {
+    left: 12px;
+    top: -8px;
+  }
+
+   #rotateG_04 {
+    right: -8px;
+    top: -5px;
+  }
+
+   #rotateG_05 {
+    right: -10px;
+    top: 2px;
+  }
+
+   #rotateG_06 {
+    right: -8px;
+    bottom: -2px;
+  }
+
+   #rotateG_07 {
+    bottom: -4px;
+    left: 12px;
+  }
+
+   #rotateG_08 {
+    left: 5px;
+    bottom: -2px;
+  }
+
+</style>
+<div class="text-center proximaFont font16px" style="position: absolute;margin:auto;left:0;right:0;top:50%;transform:translateY(-50%);">
+<img src="images/noInternet.png" style="max-width: 64px;height: auto;max-height: 64px;opacity: 0.6" />
+
+<div class="font22px colorDark proximaSemiBoldFont marginTop25px" style="margin-top:25px;">No Internet Connection</div>
+<div class="colorDarkGrey marginTop15px lineheight22px" style="margin-top: 15px;">Seems like your connection is off.<br />
+Click the button below to try again.</div>
+<div class="marginTop25px" ng-click="checkNetwork();" style="margin-top:25px;">
+<a class="btn btn-small btn-primary fixButonSize" id="tryAgainBtn">Try Again</a></div>
+</div>
