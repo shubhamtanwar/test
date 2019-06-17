@@ -76,7 +76,7 @@ document.addEventListener('deviceready',onDeviceReady, false);
 
 var MyCampusApp = {
     config : {
-        tenant : "uartsu8",
+        tenant : "unifyedguest",
         serverUrl : "https://kryptos.kryptosmobile.com",
         tenantFolder : function(device, tenant) {
             if(device.platform == 'Android') {
@@ -192,7 +192,6 @@ var MyCampusApp = {
         //Lets pull the default metadata file.
         if(!storedMetadata) {
             $http.get("default-metadata.json").success(function(data){
-                console.log('metaData',data);
                 var tenantid = data.tenantid
                 $.jStorage.set(tenantid + '-metadata', data);
                 MyCampusApp.config.tenant = tenantid;
@@ -967,69 +966,6 @@ var MyCampusApp = {
     },
 
     activatePushNotification : function(tenantId,$http) {
-		try {		
-            var gcmSenderID = "1036018410825"; // Comment this line once we have added upgraded our platform to send push.		
-            if ($.jStorage.get("deviceID") == null || $.jStorage.get("deviceID") == undefined) {		
-                MyCampusApp.rootScope.push = PushNotification.init({		
-                                                                   android: {		
-                                                                   senderID: gcmSenderID,		
-                                                                           icon: "myicon",		
-                                                                           iconColor: "#123456",		
-                                                                           vibrate: "true",		
-                                                                           sound: "true"		
-                                                                   },		
-                                                                   browser: {		
-                                                                   pushServiceURL: 'http://push.api.phonegap.com/v1/push'		
-                                                                   },		
-                                                                   ios: {		
-                                                                   alert: "true",		
-                                                                   badge: "true",		
-                                                                   sound: "true"		
-                                                                   },		
-                                                                   windows: {}		
-                                                                   });		
-                     try {		
-         PushNotification.createChannel(		
-           () => {		
-             console.log("success");		
-           },		
-           () => {		
-             console.log("error");		
-           },		
-           {		
-             id: "SITU8",		
-             description: "SIT Push Channel",		
-             importance: 1,		
-             vibration: true,		
-             sound: "default",		
-             visibility: 1		
-           }		
-         );		
-       } catch (e) {		
-         console.log("channel not created"+ e);		
-       }		
-                		
-                MyCampusApp.rootScope.push.on('registration', function(data) {		
-                                              var devicePushID = data.registrationId;		
-                                              var pushDeviceData = {		
-                                              "tenant": MyCampusApp.rootScope.tenant,		
-                                              "id": devicePushID,		
-                                              "type": device.platform,		
-                                              "channel": "all"		
-                                              };		
-                                              $http.post("https://push.kryptosmobile.com/kryptosds/push/adddeviceToChannel", pushDeviceData).success(function(response) {		
-                                                                                                                                              $.jStorage.set("deviceID", devicePushID);		
-                                                                                                                                              //alert(JSON.stringify(response));		
-                                                                                                                                              }).		
-                                              error(function(err) {		
-                                                    //alert("err" + JSON.stringify(response));		
-                                                    });		
-                                              		
-                                              });		
-            }		
-        } catch (e) { 		
-            //alert(e)		
-        }		
 
     },
 

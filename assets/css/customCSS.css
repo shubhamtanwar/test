@@ -285,7 +285,7 @@
 }
 .backArrow{
   position: absolute;
-  left: 15px;
+  left: 45px;
 }
 .backArrow > div{
   line-height: 50px;
@@ -300,10 +300,10 @@
 
 .list-group-item.mainNavTopHeader{
   height: 90px;
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 101%;
   z-index: 3;
 }
 .mainNavTopHeader img{
@@ -358,9 +358,6 @@
 }
 
 /* Header static CSS classes ends*/
-.hideFooter {
-    display: none;
-}
 .backButtonArrow {
     position: absolute;
 }
@@ -379,7 +376,7 @@
   transform: inherit;
   animation: none
 }
-/*.sideBarBack{
+.sideBarBack{
   position: fixed;
   width: 100%;
   height: 100%;
@@ -397,7 +394,7 @@ body.has-sidebar-left .sideBarBack{
   transform: translate3d(-100%,0,0);
   opacity: 0;
   display: none;
-}*/
+}
 body{
   position: fixed;
 } 
@@ -453,7 +450,7 @@ body{
 }
 
 .app-body {
-  padding-bottom: 90px !important
+  /*padding-bottom: 90px !important*/
 }
 .app-content {
     position: relative;
@@ -1378,7 +1375,6 @@ textarea {
   opacity: 0;
   padding: 10px;
 }
-
 .slider {
   cursor: pointer;
   top: 0px;
@@ -1434,7 +1430,7 @@ input:checked + .slider:before {
 .control input {
   position: absolute;
   z-index: -1;
-  display: none;
+  opacity: 0;
 }
 
 .control__indicator {
@@ -2843,11 +2839,12 @@ img.filledIcon16:hover {
 .scrollable-content{
   position: fixed;
 }
-
-.userLoginIcon{
-    margin: 15px 15px 0 0;
+.menuGrid_Main .gridAppContainer{
+    padding-bottom: 50px;
 }
-
+.userLoginIcon{
+   margin: 15px 15px 0 0;
+}
 .menuGrid_Main .gridNavigationContainer .gridAppItem {
     border-radius: 8px;
     text-align: center;
@@ -2856,53 +2853,18 @@ img.filledIcon16:hover {
     position: relative;
     margin: 11px 6px;
     text-decoration: none;
-}
+  }
 .menuGrid_Main .gridNavigationContainer {
   margin-top: 35%;
   background: #f8f8f8;
   padding: 24px;
-  padding-bottom: 15px !important;
+  padding-bottom: 50px !important;
   width: 100%;
   min-height: 88vh;
   height: auto;
 }
 @media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
-  /* Header static CSS classes */
-  .header {
-    padding-top: 15px;
-    padding-bottom: 35px;
-  }
-  .footerGroupIcons {
-    padding-bottom: 30px;
-  }
-  .app-content #appContent {
-    margin: 50px 0 7px 0 !important;
-    padding-bottom: 65px !important;
-  }
-  .signInBoxMob {
-    padding: 50px 20px !important;
-  }
   .app-body{
-    padding-bottom: 125px !important;
-  }
-}
-
-@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
-  .header {
-    padding-top: 15px;
-    padding-bottom: 35px;
-  }
-  .footerGroupIcons {
-    padding-bottom: 30px;
-  }
-  .app-content #appContent {
-    margin: 50px 0 7px 0 !important;
-    padding-bottom: 65px !important;
-  }
-  .signInBoxMob {
-    padding: 50px 20px !important;
-  }
-  .app-body{
-    padding-bottom: 125px !important;
+    padding-bottom: 80px !important;
   }
 }

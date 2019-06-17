@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
     <widget xmlns     = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
-        id = "com.kryptosmobile.uartsu8" version   = "1.0.0">
+        id = "com.unifyed.uartsu8" version   = "1.0.0">
         <name>myUArts</name>
         <description>University of the Arts U8 mobile app</description>
         <author href="http://kryptosmobile.com" email="info@kryptosmobile.com">Kryptos Mobile Team</author>
         <feature name="http://api.phonegap.com/1.0/device" />
-        <preference name="phonegap-version" value="cli-7.1.0" />
+       <preference name="phonegap-version" value="cli-7.1.0" />
    <preference name="permissions" value="none" />
    <preference name="orientation" value="portrait" />
    <!-- all: default means both landscape and portrait are enabled -->

@@ -360,7 +360,7 @@ controller('MyCtrl1', [function() {
             MyCampusApp.fillRootScopeForHome($rootScope, $sce, tenant, $window, $location, $route, $http, $scope, $compile);
 
             if (window.device) {
-                var allIcons, allScreens, dock, dockIcons, icon, stage, _i, _len, _results;
+                try{var allIcons, allScreens, dock, dockIcons, icon, stage, _i, _len, _results;
                 allIcons = [];
                 dockIcons = [];
                 $.each($rootScope.apps, function(index, val) {
@@ -396,36 +396,7 @@ controller('MyCtrl1', [function() {
                     icon = dockIcons[_i];
                     _results.push(dock.append(icon.markup));
                 }
-
-                /*var homedata = $("#homedata");
-                homedata.html("");
-                var iconwidth = 64;
-                var sampleicon = $('#sampleicon');
-                var calculated = sampleicon.outerWidth(true);
-                if (calculated != 0) {
-                    iconwidth = sampleicon.outerWidth(true) + 24;
-                }
-                var width = $(window).width() > 780 ? $(window).width() - 280 : $(window).width();
-                var cols = Math.floor(width / iconwidth);
-                var rows = Math.floor(($(window).height() - 200) / iconwidth);
-
-                for (_i = 0, _len = allIcons.length; _i < _len; _i++) {
-                    icon = allIcons[_i];
-                    var markup = '<li class="dashboardIcon"><a aria-label="'+icon.title+'" href="' + icon.url + '"><img src="' + icon.logourl + '" class="icon"></img></a>' +
-                        '<div class="campuseai-Info text-center" style="width:' + calculated + 'px;overflow:hidden;text-overflow: ellipsis;">'
-                        + icon.title + '</div></li>';
-                    homedata.append(markup);
-                }
-
-                $("#homedata").promptumenu({
-                    width: (width - 24),
-                    height: ($(window).height() - 200),
-                    rows: rows,
-                    columns: cols,
-                    direction: 'horizontal',
-                    pages: true
-                });*/
-                //End AK
+            }catch(e){console.log('rootScope.apps',e)}
             }
 
             var baseUrl = MyCampusApp.config.serverUrl; //"http://localhost:8081/";
@@ -453,8 +424,8 @@ controller('MyCtrl1', [function() {
                             MyCampusApp.checkAndUpdateMetadata(tenant, baseUrl, $http, -1, $route, $rootScope, $scope, $sce, logosDirPath, $compile);
                         };
                         MyCampusApp.checkAndUpdateMetadata(tenant, baseUrl, $http, -1, $route, $rootScope, $scope, $sce, logosDirPath, $compile);
-                      */
-				   }
+                        */
+				   } 
                 };
 
                 var onFileSystemSuccess = function(fileSystem) {

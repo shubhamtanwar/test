@@ -418,12 +418,12 @@ angular.module('myApp.services', [])
                 return callback();
             }
         }
-        
-        $rootScope.refreshToken = function (url, method, apidata, callback) {
+        $rootScope.refreshToken = function(url, method, data, callback) {
+
             $.blockUI();
             var refreshUrl = $rootScope.GatewayUrl + "/unifydidentity/open/oauth2/token";
-            //var data = "refresh_token=" + $rootScope.user.refreshToken;
-            var data = 'username=' + $.jStorage.get("unifyedusername") + '&password=' + $.jStorage.get("unifyedpassword");
+            var data = "refresh_token=" + $rootScope.user.refreshToken;
+
             var req = {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -434,16 +434,15 @@ angular.module('myApp.services', [])
                 data: data,
                 json: true
             }
+
             $http(req).then(function successCallback(res) {
                 var data = res.data;
-                console.log('beforeRefresh', $rootScope.user);
                 $rootScope.user['accessToken'] = data.access_token;
                 $rootScope.user['refreshToken'] = data.refresh_token;
                 $rootScope.user['providerData'] = data.access_token;
-                console.log('afterRefresh', $rootScope.user);
-                $.jStorage.set('user', $rootScope.user);
+
                 $.jStorage.set('userToken', res.data);
-                $rootScope.callAPI(url, method, apidata, callback);
+                $rootScope.callAPI(url, method, data, callback);
                 $.unblockUI();
             }, function errorCallback(err) {
                 console.log(err);
@@ -473,41 +472,6 @@ angular.module('myApp.services', [])
             });
 
         };
-
-
-        $rootScope.getNotificationBadgeMobile = function() {
-            $rootScope.notificationcentre = $rootScope.notificationcentre || {}
-            if (!$rootScope.GatewayUrl || !$rootScope.user || !$rootScope.user.accessToken || !$rootScope.user.email) {
-              setTimeout(function() {
-                $rootScope.getNotificationBadgeMobile();
-              }, 500);
-              return true;
-            }
-        
-            var headers = {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'Authorization': 'Bearer ' + $rootScope.user.accessToken,
-              'X-TENANT-ID': $rootScope.user.tenant,
-              'X-TENANT-DOMAIN': $rootScope.user.tenantdomain,
-              'principal-user': $rootScope.username,
-              'X-USER-EMAIL': $rootScope.user.email
-            }
-            if ($rootScope.site && $rootScope.site._id) headers['site-id'] = $rootScope.site._id;
-            var url = $rootScope.GatewayUrl + '/unifyed-notificationcentre/v1/notifications/count?type=sent';
-            $http({
-              method: 'GET',
-              url: url,
-              headers: headers
-            }).then(function successCallback(response) {
-              $rootScope.notificationcentre.badge = (response && response.data && response.data.data) || 0;
-              try {
-                $rootScope.$apply();
-              } catch (ex) {}
-            }, function errorCallback(error) {
-              console.log("in callAPI, URL : " + url + " : error status=" + error.status);
-            });
-          };
     }]);
 
 /*****************End for Services for unifyed applets (whatsUp, messaging etc) *********************************/

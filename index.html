@@ -87,20 +87,21 @@
         {{customStyle}}
     </style>
     <div class="sideBarBack" toggle="off" target="mainSidebar"></div>
-    <!--<div ng-include="'sidebar.html'" class="sidebar sidebar-left" toggleable parent-active-class="sidebar-left-in" id="mainSidebar"></div>-->
+    <div ng-include="'sidebar.html'" class="sidebar sidebar-left" toggleable parent-active-class="sidebar-left-in" id="mainSidebar"></div>
     <div class="app" style="background:url(" {{backgroundUrl}} ");">
+        <!--<div style="width:100%;height:100%;background-color:#000000;background:#000000;opacity:0.5;position:absolute;top:50px;z-index:999;" ng-show="blackOverlay" ng-swipe-left="myswipeleft();" ng-swipe-right="myswiperight();" ng-click="myswipeleft();"></div>-->
         <div  class="appheader navbar-app proximaSemiBoldFont fontSize18  positionRelative">
-            <!--<div id="sidebarLauncher" class="btn-group sideBarMenu positionabsolute" title="Sidebar Menu" aria-label="Sidebar Menu" name="Sidebar Menu" data-name="Sidebar Menu">
+            <div id="sidebarLauncher" class="btn-group sideBarMenu positionabsolute" title="Sidebar Menu" aria-label="Sidebar Menu" name="Sidebar Menu" data-name="Sidebar Menu">
                 <div aria-label="Sidebar Menu" ng-click="toggle('mainSidebar')" class="btn btn-navbar sidebar-toggle" >
                     <img id="unifyedMenuIcon" class="convertsvg headerIcon"  src="images/menu-options.svg">
                 </div>
-            </div>-->
+            </div>
             <div id="sidebarBackarrow" class="backArrow">
                 <div ng-hide="showlogin" title="Back" aria-label="Back" name="Back" data-name="Back" ng-click="back();" >
                     <img id="unifyedLeftArrowIcon" class="convertsvg headerIcon" src="images/back-icon.png">
                 </div>
             </div>
-            <div class="pull-right">
+            <!--<div class="pull-right">
                     <div aria-label="Login" ng-show="!$root.loggedIn" ng-click='loginlogout();' class="userLoginIcon">
                         <img class="convertsvg headerIcon" id="unifyedloginIcon" src="images/login.svg" alt="">
                     </div>
@@ -121,57 +122,12 @@
                         </a>
 
                     </div>
-            </div>
+            </div-->
             <div  class="text-center fixAppHeaderCenter">
                 <span ng-bind="appDisplayName"> </span>
             </div>
 
         </div>
-
-        <!-- Footer for prospect student -->
-        <!--<div id="footerContentContainer" class="footerGroupIcons testClass hide" ng-if="$root.user.email == 'janedoeprospect@unifyed.com'" >
-            <div>
-                <div class="appletStatus">
-                  <a aria-label="Status" href="#/app/Status/Status">
-                    <img ng-src="demo1/Status.png"/>
-                  </a>
-                </div>
-                <div class="appletNews343">
-                  <a aria-label="News" href="#/app/News343/News343">
-                    <img ng-src="demo1/News343.png"/>
-                  </a>
-                </div>
-                <div class="appletYouTube20">
-                  <a aria-label="Videos" href="#/app/YouTube20/YouTube20">
-                    <img ng-src="demo1/YouTube20.png"/>
-                  </a>
-                </div>
-                <div class="appletcannoneerAthletics">
-                  <a aria-label="Athletics" href="#/app/cannoneerAthletics/cannoneerAthletics">
-                    <img ng-src="demo1/cannoneerAthletics.png"/>
-                  </a>
-                </div>
-                <div class="appletMenu82">
-                  <a aria-label="Menu" href="#/app/Menu82/Menu82">
-                    <img ng-src="demo1/Menu82.png"/>
-                  </a>
-                </div>
-                <div class="clearfix"></div>
-            </div>
-        </div> -->
-        <!-- Footer for prospect student -->
-        <div id="footerContentContainer" class="footerGroupIcons testClass">
-            <div ng-repeat="ag in appgroups">
-                <div ng-repeat="app in ag.apps" ng-if="app.showInDock" class="applet{{app.id}}">
-
-                    <a aria-label="{{app.displayname}}" href="#/app/{{app.name}}/{{app.name}}">
-                    <img ng-src="{{app.logo}}"/>
-            </a>
-                </div>
-                <div class="clearfix"></div>
-            </div>
-        </div>
-
 
         <div id="fixedHeaderContent"></div>
         <div id="fixedFooterContent"></div>
@@ -291,7 +247,6 @@
 <script type="text/javascript">
     function removeModal(){
         $('.modale').removeClass('opened');
-		$('.modale').hide();
     }
     /*setTimeout(function() {
         jQuery('img.sidebar-menu-icon , img.convertsvg').each(function() {

@@ -25,7 +25,7 @@
 <!--<div class="navbar-brand" style="color:white;font-weight=bold;" ng-bind="appDisplayName"></div>-->
 
 <div class="scrollable sidebar-scrollable" style="background:#f3f3f3;" class='openSans' ng-show="metadata">
-    <div class="scrollable-content sidebar" style="overflow: auto;">
+    <div class="scrollable-content" style="overflow: auto;">
         <div class="list-group mainNav " >
 
             <!--<a aria-label="Home" class="list-group-item" href="#/app/ProfileUpdate/ProfileUpdate" style="padding:0px;padding-left:0px !important;font-size:16px;font-weight:normal;">
@@ -56,17 +56,17 @@
              Login for additional features
              <i class="fa fa-chevron-right pull-right"></i>
              </a>-->
-            <div  ng-show="!$root.loggedIn" class="list-group-item  displayTable  mainNavTopHeader borderNone">
+            <div  class="list-group-item  displayTable  mainNavTopHeader borderNone">
                 <span class="displayTableCell avtarBox ">
                     <img class="avatar" src="images/profileImage.png">
                 </span>
                 <span style="font-size:13px;margin-left:3px; margin-top:3px !important;" class='openSans displayTableCell verticalAlignMiddle '>Welcome, Guest
                     <br/>   
-                    <span ng-click='loginlogout();' style="font-size:10px;margin-left:3px; margin-top:3px !important;" class='openSans displayTableCell verticalAlignMiddle '>Login Here</span>
+                    <!--<span ng-click='loginlogout();' style="font-size:10px;margin-left:3px; margin-top:3px !important;" class='openSans displayTableCell verticalAlignMiddle '>Login Here</span>-->
                 </span>                
             </div>
 
-            <div  ng-show="$root.loggedIn" class="list-group-item  displayTable  mainNavTopHeader borderNone">
+            <!--<div  ng-show="$root.loggedIn" class="list-group-item  displayTable  mainNavTopHeader borderNone">
                 <span class="displayTableCell avtarBox " ng-if="$root.user.profileImage != '' && $root.user.profileImage != null">
                     <img class="avatar borderRadiusCircle" id="logo-{{app.name}}" ng-src="{{$root.user.profileImage}}" />
                 </span>
@@ -75,7 +75,7 @@
                 </div>
                 <span style="font-size:13px;margin-left:3px; margin-top:3px !important;" class='openSans displayTableCell verticalAlignMiddle '>Welcome, {{$root.user.firstName}}&nbsp;{{$root.user.lastName}}                    
                 </span>                
-            </div>
+            </div>-->
             
 
             <div class="mainAppSearch">
