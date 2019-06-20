@@ -28,7 +28,6 @@ angular.module('myApp', [
         $routeProvider.when('/app/:appid/:pageid', {templateUrl: 'partials/app.html', controller: 'AppCtrl'});
         $routeProvider.when('/launch/:tenant', {templateUrl: 'partials/partial1.html', controller: 'LaunchCtrl'});
         $routeProvider.when('/applications', {templateUrl: 'partials/applications.html', controller: 'ApplicationsCtrl'});
-        $routeProvider.when('/appUpdated', {templateUrl: 'partials/appUpdated.html', controller: 'AppUpdatedCtrl'});
         //$routeProvider.otherwise({redirectTo: '/amakerhome'});
         $routeProvider.otherwise({redirectTo: '/home'});
         $httpProvider.defaults.timeout = 5000;
@@ -41,7 +40,7 @@ angular.module('myApp', [
     }
 ]);
 
-var onDeviceReady = function() {
+var onDeviceReady = function() {   
     angular.bootstrap( document, ['myApp']);
     var handleOrientation = function() {
         if (orientation == 0) {
@@ -68,7 +67,6 @@ var onDeviceReady = function() {
     }
     window.handleOrientation = handleOrientation;
     window.addEventListener('orientationchange', handleOrientation, false);
-    
 }
 
 document.addEventListener('deviceready',onDeviceReady, false);
@@ -76,7 +74,7 @@ document.addEventListener('deviceready',onDeviceReady, false);
 
 var MyCampusApp = {
     config : {
-        tenant : "uartsu8",
+        tenant : "stmunew",
         serverUrl : "https://kryptos.kryptosmobile.com",
         tenantFolder : function(device, tenant) {
             if(device.platform == 'Android') {
@@ -97,8 +95,8 @@ var MyCampusApp = {
     init : function(){
         MyCampusApp.initMode = true;
         document.addEventListener('deviceready', MyCampusApp.deviceReadyHandler, false);
-
-
+        
+        
 
     },
 
@@ -140,9 +138,9 @@ var MyCampusApp = {
             //if (MyCampusApp.rootScope.cangelistadded) {
             MyCampusApp.rootScope.$on("$routeChangeStart", function(event, next, current) {
                 //alert(event);
-                $(".app-body").removeClass("bounceInDown");
-                $(".app-body").removeClass("bounceInRight");
-                $(".app-body").removeClass("bounceInLeft");
+                $(".app-body").removeClass("slideInDown");
+                $(".app-body").removeClass("slideInRight");
+                $(".app-body").removeClass("slideInLeft");
                 $(".app-body").addClass("animated");
 
                 //$(".app-body").addClass("slideOutUp");
@@ -154,7 +152,7 @@ var MyCampusApp = {
                 //$("#appContent").height(($(document).height() - 105) + "px");
                 $(".footerGroupIcons div div").css('opacity', 0.4);
 
-                try{for (var i = 0; i < MyCampusApp.rootScope.appgroups[0].apps.length; i++) {
+                for (var i = 0; i < MyCampusApp.rootScope.appgroups[0].apps.length; i++) {
                     if ((next.pathParams.appid == MyCampusApp.rootScope.appgroups[0].apps[i].name) && (MyCampusApp.rootScope.appgroups[0].apps[i].showInDock)) {
                         $(".applet" + MyCampusApp.rootScope.appgroups[0].apps[i].id).css('opacity', 1);
                         break;
@@ -167,24 +165,32 @@ var MyCampusApp = {
                     $('.divQuickLaunch').css('opacity', '0.4');
                 }
                 if (next.params.appid == 'SignIn279') {
-                    $(".app-body").addClass("bounceInDown");
+                    $(".app-body").addClass("slideInDown");
                 } else {
+                    /*if (current.params.appid == next.params.appid && next.params.appid == next.params.pageid) {
+                    $(".app-body").addClass("slideInLeft");
+                    } else {
+                    $(".app-body").addClass("slideInRight");
+                    }*/
                     console.log(MyCampusApp.rootScope.leftToRight);
 
                     if (MyCampusApp.rootScope.leftToRight) {
-                        $(".app-body").addClass("bounceInLeft");
+                        $(".app-body").addClass("slideInLeft");
                         MyCampusApp.rootScope.leftToRight = false;
                     } else {
-                        $(".app-body").addClass("bounceInRight");
+                        $(".app-body").addClass("slideInRight");
                     }
-                }   
-            }catch(e){console.log('routeChangeSuccess',e); $route.reload();}
+                }
 
                 $(".app-body").addClass("animated");
                 //$(".app-body").removeClass("slideOutUp");
             });
             MyCampusApp.rootScope.cangelistadded = true;
             //}
+        } catch (e) {
+            alert(e)
+        }
+
 
         $.KNMonitor.initialize($rootScope);
         var storedMetadata =  $.jStorage.get( tenant + '-metadata'); //window.localStorage.getItem('metadata');
@@ -203,10 +209,10 @@ var MyCampusApp = {
                     MyCampusApp.activatePushNotification(tenantid,$http);
                 }
                 //var message = '<style>.blockOverlay{opacity:1 !important;}</style><div style="margin:auto;position:fixed;left:0px;right:0px;vertical-align: middle; display: inline-block;"><i class="icon-cog icon-spin icon-4x"></i><h3 style="color:white;">Initializing..</h3></div>';
-
-
+                                                       
+                                                       
                 var message = '<style>.blockOverlay{opacity:1 !important;}</style><div id="floatingBarsG"><div class="blockG" id="rotateG_01"></div><div class="blockG" id="rotateG_02"></div><div class="blockG" id="rotateG_03"></div><div class="blockG" id="rotateG_04"></div><div class="blockG" id="rotateG_05"></div><div class="blockG" id="rotateG_06"></div><div class="blockG" id="rotateG_07"></div><div class="blockG" id="rotateG_08"></div></div><div><h3 style="color:white;">Initializing</h3></div>';
-
+                                                       
                 $.blockUI({message : message});
                 setTimeout(function() {
                     $.unblockUI();
@@ -219,7 +225,7 @@ var MyCampusApp = {
             }).error(function(data){
                 });
         }
-
+        
         //Store update bug fix start (Nick)
         else {
             if(!$rootScope.imageoptimized) {
@@ -237,11 +243,10 @@ var MyCampusApp = {
                                                            //var message = '<div style="margin: auto; vertical-align: middle; display: inline-block;position:fixed;left:0px;right:0px;"><i class="icon-cog icon-spin icon-4x"></i><h3 style="color:white;">Starting up</h3></div>';
                                                            //$.blockUI({message : message});
                                                            $.blockUI();
-                                                           /*setTimeout(function() {
-                                                                      alert("fillRootScopeForHome 249");
+                                                           setTimeout(function() {
                                                                       $.unblockUI();
                                                                       $route.reload();
-                                                                      },5000);*/
+                                                                      },5000);
                                                            }
                                                            }).error(function(data){
                                                                     });
@@ -252,12 +257,12 @@ var MyCampusApp = {
             try {
                 navigator.splashscreen.hide();
             }catch(ex) {
-
+                
             }
         }, 0);
 
         //Store update bug fix end (Nick)
-
+        
         if(storedMetadata) {
             if($rootScope.loggedin) {
                 if($rootScope.userroles) {
@@ -311,12 +316,12 @@ var MyCampusApp = {
             $rootScope.metadata = storedMetadata;
             $rootScope.middlewareServerUrl = storedMetadata.middlewareServerUrl;
             $rootScope.customStyle = $sce.trustAs($sce.CSS, storedMetadata.customStyle);
-
+            
             /*Nick added to get device details - start*/
-            /*$rootScope.devicePlatform = window.device.platform;
+            $rootScope.devicePlatform = window.device.platform;
             $rootScope.deviceUUID = window.device.uuid;
             $rootScope.deviceModel = window.device.model;
-            $rootScope.deviceVersion = window.device.version;*/
+            $rootScope.deviceVersion = window.device.version;
             /*Nick added to get device details - end*/
 
             $('#customstyle').html(storedMetadata.customStyle);
@@ -347,21 +352,13 @@ var MyCampusApp = {
                     $.jStorage.deleteKey('username');
                     $.jStorage.deleteKey('password');
                     $.jStorage.deleteKey('ticket');
-                    $.jStorage.deleteKey("user");
-                    $.jStorage.deleteKey("unifyedusername");
-                    $.jStorage.deleteKey("unifyedpassword");
-                    $rootScope.user = null;
-                    $rootScope.loggedIn = false;                    
-                    if( angular.isFunction( $rootScope["logoutcb"])){ 
+
+                    if( angular.isFunction( $rootScope["logoutcb"] ) ) {
                         $rootScope["logoutcb"]();
                     }
-					  $rootScope.$apply(function () {
-                           $location.path("/app/SignIn279/SignIn279");
-                        })
-                    
+                    $route.reload();
                 }
-			}
-            
+            };
             if(window.device) {
                 navigator.notification.confirm(
                     'Are you sure you want to logout?', // message
@@ -382,10 +379,10 @@ var MyCampusApp = {
 
         };
         $rootScope.loginlogout = function() {
-            if($rootScope.loggedIn) {
+            if($rootScope.loggedin) {
                 $rootScope.logout();
             }else {
-                $location.path("/app/SignIn279/SignIn279");
+                $rootScope.setRoute("/login");
             }
         };
         $rootScope.back = function() {
@@ -416,16 +413,6 @@ var MyCampusApp = {
         $rootScope.rightswipe = function() {
             $rootScope.stage.previous();
         }
-
-        if($rootScope.gotoAppUpdateCtrl){
-            $rootScope.gotoAppUpdateCtrl = false;
-            $location.path("/appUpdated");
-        }
-
-
-        } catch (e) {
-            alert(e)
-        }
     },
 
     deviceReadyHandler : function() {
@@ -454,7 +441,7 @@ var MyCampusApp = {
                 if(loc.hash == "#/login"){
                     window.location.href = "index.html#home";
                     return;
-
+                    
                 }else{
                     if(MyCampusApp.homeScreenDisplayed) {
                         var onConfirm = function(buttonIndex) {
@@ -547,8 +534,8 @@ var MyCampusApp = {
     checkAndUpdateMetadata : function(tenant, url, $http, currentVersion,  $route, $rootScope, $scope, $sce, logosDirPath, $compile, silent) {
         $http.post(url + "/metagate/updatecheck/" + tenant + "?callback=JSON_CALLBACK", {device: window.device}).
             success(function(data) {
-                //if(data.version != currentVersion) {
-                    if(parseInt(data.version) > parseInt(currentVersion)) {
+                if(data.version != currentVersion) {
+                   // if(parseInt(data.version) > parseInt(currentVersion)) {
                     var onConfirm = function(buttonIndex) {
                         if(buttonIndex == 1) {
                             MyCampusApp.updateMetadata(tenant, url, $http, data, $route, $rootScope, $scope, $sce, logosDirPath, $compile);
@@ -559,7 +546,6 @@ var MyCampusApp = {
                         if(window.device) {
                             if(!$rootScope.umalert) {
                                 $rootScope.umalert = true;
-                                $rootScope.gotoAppUpdateCtrl = true;
                                 navigator.notification.confirm(
                                     'App Updates available. Update?', // message
                                     onConfirm,            // callback to invoke with index of button pressed
@@ -678,8 +664,8 @@ var MyCampusApp = {
             icon = dockIcons[_i];
             _results.push(dock.append(icon.markup));
         }
-
-
+        
+        
         /* Commenting for icon issue during update manager - Start (Nick)
         var homedata = $("#homedata");
         homedata.html("");
@@ -711,9 +697,9 @@ var MyCampusApp = {
             pages: true
         });
         //End AK
-
+         
          Commenting for icon issue during update manager - end (Nick)*/
-
+         
         /*
          if(window.device) {
          $rootScope.brandingUrl = MyCampusApp.config.tenantFolder(window.device, tenant) + "branding?q=" + Math.random();
@@ -966,6 +952,64 @@ var MyCampusApp = {
     },
 
     activatePushNotification : function(tenantId,$http) {
+            try {
+            //alert("notificationcalled");
+            var gcmSenderID = "459115189650"; // Comment this line once we have added upgraded our platform to send push.
+
+            MyCampusApp.rootScope.push = PushNotification.init({
+                                                                   android: {
+                                                                   senderID: gcmSenderID
+                                                                   },
+                                                                   browser: {
+                                                                   pushServiceURL: 'http://push.api.phonegap.com/v1/push'
+                                                                   },
+                                                                   ios: {
+                                                                   alert: "true",
+                                                                   badge: "true",
+                                                                   sound: "true"
+                                                                   },
+                                                                   windows: {}
+                                                                   });
+            
+            
+                
+            if(!MyCampusApp.rootScope.onNotification){
+            //alert("onnotification");    
+            MyCampusApp.rootScope.push.on('registration', function(data) {
+                                              var devicePushID = data.registrationId;
+                                              var pushDeviceData = {
+                                              "tenant": MyCampusApp.rootScope.tenant,
+                                              "id": devicePushID,
+                                              "type": device.platform,
+                                              "channel": "all"
+                                              };
+                                              if ($.jStorage.get("deviceID") == null || $.jStorage.get("deviceID") == undefined) {
+                                              $http.post("https://push.kryptosmobile.com/kryptosds/push/adddeviceToChannel", pushDeviceData).success(function(response) {
+                                                                                                                                              $.jStorage.set("deviceID", devicePushID);
+                                                                                                                                              //alert(JSON.stringify(response));
+                                                                                                                                              }).
+                                              error(function(err) {
+                                                    alert("err" + JSON.stringify(response));
+                                                    });
+                                              }
+                                              });
+                
+                
+                MyCampusApp.rootScope.push.on('notification', function(data) {
+                                navigator.notification.alert(data.message,null,data.title,'Ok');
+                        });
+                MyCampusApp.rootScope.onNotification=true;
+            }
+
+        MyCampusApp.rootScope.push.on('error', function(e) {
+            alert("error "+e.message);
+        });
+
+        
+
+        } catch (e) { 
+            alert(e)
+        }
 
     },
 
