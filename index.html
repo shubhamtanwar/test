@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <!--
- 
+
  ** NOTE **
- 
+
  Run `grunt connect` then
  navigate to http://localhost:3001/demo
  to see this page in browser
- 
+
  -->
 
 <html>
@@ -14,21 +14,22 @@
 <head>
     <meta charset="utf-8" />
 
-    <title>KRYPTOS Mobile</title>
+    <title>Unifyed Mobile</title>
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimal-ui" />
+    <!--<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimal-ui" />-->
     <meta name="apple-mobile-web-app-status-bar-style" content="yes" />
-
+    <meta name="viewport" content="initial-scale=1, width=device-width, height=device-height, viewport-fit=cover">
     <link rel="shortcut icon" href="/favicon.png" type="image/x-icon" />
     <link rel="stylesheet" href="assets/css/bootstrap.css" />
-    <!--<link rel="stylesheet" href="assets/css/mobile-angular-ui-base.min.css" />
+
+    <link rel="stylesheet" href="assets/css/mobile-angular-ui-base.min.css" />
     <link rel="stylesheet" href="assets/css/mobile-angular-ui-max-width-767px.min.css" />
     <link rel="stylesheet" href="assets/css/mobile-angular-ui-min-width-768px-and-max-width-991px.min.css" />
     <link rel="stylesheet" href="assets/css/mobile-angular-ui-min-width-992px-and-max-width-1199px.min.css" />
     <link rel="stylesheet" href="assets/css/mobile-angular-ui-screen-and-min-width-768px.min.css" />
-    <link rel="stylesheet" href="assets/css/mobile-angular-ui-desktop.min.css" />-->
+    <link rel="stylesheet" href="assets/css/mobile-angular-ui-desktop.min.css" />
 
     <link rel="stylesheet" href="assets/css/apprise.min.css" rel="stylesheet" />
     <link href="assets/font-awesome/font-awesome.min.css" rel="stylesheet" />
@@ -39,6 +40,8 @@
     <link rel="stylesheet" href="assets/css/animate.css">
     <link rel="stylesheet" href="assets/css/spectrum.css">
     <link rel="stylesheet" href="assets/css/nanoscroller.css">
+    <link rel="stylesheet" href="assets/css/swiper.css">
+    <link rel="stylesheet" href="assets/css/jquery-ui.css">
 
     <script src="assets/js/angular.js"></script>
     <script src="assets/js/angular-route.min.js"></script>
@@ -63,43 +66,120 @@
     <script src="assets/js/blockui.min.js"></script>
     <script src="assets/js/jquery.promptu-menu.js"></script>
     <script src="assets/js/moment.js"></script>
+    <script src="assets/js/rrule.js"></script>
+    <script src="assets/js/jquery-ui.js"></script>
+	<script src="assets/js/jquery.ui.touch-punch.min.js"></script>
     <script type="text/javascript" src="assets/js/spectrum.js"></script>
     <script type="text/javascript" src="assets/js/apprise.min.js"></script>
     <script type="text/javascript" src="assets/js/jquery.nanoscroller.min.js"></script>
+	<script type="text/javascript" src="assets/js/rrule.js"></script>
+    <!--swiper js -->
+    <script src="assets/js/swiper.min.js"></script>
+    <script src="assets/js/async.min.js"></script>
+    <script id="jqtreejs" src="js/cmslib/tree.jquery.js"></script>
+
 </head>
 
 <!--<body ng-app="myApp" ng-controller="MainController">-->
 
 <body class="proximaFont">
     <style id="customstyle">
-        {
-                {
-                customStyle
-            }
-        }
+        {{customStyle}}
     </style>
+    <div class="sideBarBack" toggle="off" target="mainSidebar"></div>
+    <!--<div ng-include="'sidebar.html'" class="sidebar sidebar-left" toggleable parent-active-class="sidebar-left-in" id="mainSidebar"></div>-->
     <div class="app" style="background:url(" {{backgroundUrl}} ");">
-        <div style="" class="header proximaSemiBoldFont fontSize18 headerFooterBg">
-            <div class="pull-left backButtonArrow">
-                <div ng-hide="showlogin" title="Back" aria-label="Back" name="Back" data-name="Back" ng-click="back();">
-                    <img src="images/back-icon.png" alt="">
+        <div  class="appheader navbar-app proximaSemiBoldFont fontSize18  positionRelative">
+            <!--<div id="sidebarLauncher" class="btn-group sideBarMenu positionabsolute" title="Sidebar Menu" aria-label="Sidebar Menu" name="Sidebar Menu" data-name="Sidebar Menu">
+                <div aria-label="Sidebar Menu" ng-click="toggle('mainSidebar')" class="btn btn-navbar sidebar-toggle" >
+                    <img id="unifyedMenuIcon" class="convertsvg headerIcon"  src="images/menu-options.svg">
+                </div>
+            </div>-->
+            <div id="sidebarBackarrow" class="backArrow">
+                <div ng-hide="showlogin" title="Back" aria-label="Back" name="Back" data-name="Back" ng-click="back();" >
+                    <img id="unifyedLeftArrowIcon" class="convertsvg headerIcon" src="images/back-icon.png">
                 </div>
             </div>
-            <div ng-bind="appDisplayName" class="text-center"></div>
+            <div class="pull-right">
+                    <div aria-label="Login" ng-show="!$root.loggedIn" ng-click='loginlogout();' class="userLoginIcon">
+                        <img class="convertsvg headerIcon" id="unifyedloginIcon" src="images/login.svg" alt="">
+                    </div>
+                
+                    <div aria-label="Profile" ng-show="$root.loggedIn" >
+                        <a href="#/app/Profile306/Profile306">
+                          <div>
+                            <div class="displayTable">
+                              <div class="profilePic displayTableCell verticalAlignMiddle" ng-if="$root.user.profileImage != '' && $root.user.profileImage != null">
+                                <img class="avatar borderRadiusCircle" id="logo-{{app.name}}" ng-src="{{$root.user.profileImage}}" />
+                              </div>
+                              <div class="nameContainer displayTable borderRadiusCircle marginAuto pull-left img-sm" ng-style="{ background: randomBackground($root.user.firstName[0],$root.user.lastName[0]) }" ng-if="$root.user.profileImage==''|| $root.user.profileImage==null" style="width: 30px;height: 30px;min-width: 30px;min-height: 30px;">
+                                <span class="displayTableCell verticalAlignMiddle fontBold fontSize18 whiteTextColor textcenter text-uppercase fontSize20">{{$root.user.firstName[0]}}{{$root.user.lastName[0]}}</span>
+                              </div>
+                            </div>
+                          </div>                          
+                          <div class="clearfix"></div>
+                        </a>
+
+                    </div>
+            </div>
+            <div  class="text-center fixAppHeaderCenter">
+                <span ng-bind="appDisplayName"> </span>
+            </div>
+
         </div>
 
-
+        <!-- Footer for prospect student -->
+        <!--<div id="footerContentContainer" class="footerGroupIcons testClass hide" ng-if="$root.user.email == 'janedoeprospect@unifyed.com'" >
+            <div>
+                <div class="appletStatus">
+                  <a aria-label="Status" href="#/app/Status/Status">
+                    <img ng-src="demo1/Status.png"/>
+                  </a>
+                </div>
+                <div class="appletNews343">
+                  <a aria-label="News" href="#/app/News343/News343">
+                    <img ng-src="demo1/News343.png"/>
+                  </a>
+                </div>
+                <div class="appletYouTube20">
+                  <a aria-label="Videos" href="#/app/YouTube20/YouTube20">
+                    <img ng-src="demo1/YouTube20.png"/>
+                  </a>
+                </div>
+                <div class="appletcannoneerAthletics">
+                  <a aria-label="Athletics" href="#/app/cannoneerAthletics/cannoneerAthletics">
+                    <img ng-src="demo1/cannoneerAthletics.png"/>
+                  </a>
+                </div>
+                <div class="appletMenu82">
+                  <a aria-label="Menu" href="#/app/Menu82/Menu82">
+                    <img ng-src="demo1/Menu82.png"/>
+                  </a>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div> -->
+        <!-- Footer for prospect student -->
         <div id="footerContentContainer" class="footerGroupIcons testClass">
             <div ng-repeat="ag in appgroups">
                 <div ng-repeat="app in ag.apps" ng-if="app.showInDock" class="applet{{app.id}}">
 
-                    <a ng-if="app.displayname != 'Notifications'" aria-label="{{app.displayname}}" href="#/app/{{app.name}}/{{app.name}}">
+                    <span class="badge DockBadgeIcon" ng-if="app.name == 'Notification290' && notificationcentre && notificationcentre.badge" id="notificationBubble">
+                        {{(notificationcentre && notificationcentre.badge && notificationcentre.badge <= 9 && notificationcentre.badge) || notificationcentre && notificationcentre.badge && notificationcentre.badge > 9 && 9 }}<i class="fa fa-plus font8" ng-if="notificationcentre.badge > 9"></i>
+                    </span>  
+
+                    <!-- <a aria-label="{{app.displayname}}" href="#/app/{{app.name}}/{{app.name}}">
+                    <img ng-src="{{app.logo}}"/>
+                    </a> -->
+            
+            <a aria-label="{{app.displayname}}" href="#/app/{{app.name}}/{{app.name}}">
                 <img ng-src="{{app.logo}}"/>
             </a>
                 </div>
                 <div class="clearfix"></div>
             </div>
         </div>
+
 
         <div id="fixedHeaderContent"></div>
         <div id="fixedFooterContent"></div>
@@ -141,6 +221,24 @@
             onDeviceReady();
         }
     </script>
+    <script>
+  (function(w, d, s, g, js, fs) {
+    g = w.gapi || (w.gapi = {});
+    g.analytics = {
+      q: [],
+      ready: function(f) {
+        this.q.push(f);
+      }
+    };
+    js = d.createElement(s);
+    fs = d.getElementsByTagName(s)[0];
+    js.src = 'https://apis.google.com/js/platform.js';
+    fs.parentNode.insertBefore(js, fs);
+    js.onload = function() {
+      g.load('analytics');
+    };
+  }(window, document, 'script'));
+</script>
     <span id="sampleicon" class="icon" style="display:none"></span>
 </body>
 <style type="text/css">
@@ -175,12 +273,11 @@
     /* margin-left: -200px; */
     text-align: center;
     position: fixed;
-    top:-100%;
+    top:12%;
     left: 0;
     right: 0;
     margin: auto;
     z-index: 11;
-    width: 85%;
     max-width: 400px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
     -webkit-transform: translate(0, 0);
@@ -198,14 +295,49 @@
         margin: auto;
         font-size: 14px;
     }
-    .footerGroupIcons {
-            background: #f4f4f4 !important;
-            border-top: 1px solid #bebfc0;
+
+    .DockBadgeIcon{
+        position: absolute;
+        top: 4px;
+        width: 20px;
+        height: 20px;
+        padding: 0px 7px;
+        line-height: 20px;
+        background: red;
     }
 </style>
 <script type="text/javascript">
     function removeModal(){
         $('.modale').removeClass('opened');
+		$('.modale').hide();
     }
+    /*setTimeout(function() {
+        jQuery('img.sidebar-menu-icon , img.convertsvg').each(function() {
+            var $img = jQuery(this);
+            var imgID = $img.attr('id');
+            var imgClass = $img.attr('class');
+            var imgURL = $img.attr('src');
+            jQuery.get(imgURL, function(data) {
+                // Get the SVG tag, ignore the rest
+                var $svg = jQuery(data).find('svg');
+                // Add replaced image's ID to the new SVG
+                if (typeof imgID !== 'undefined') {
+                    $svg = $svg.attr('id', imgID);
+                }
+                // Add replaced image's classes to the new SVG
+                if (typeof imgClass !== 'undefined') {
+                    $svg = $svg.attr('class', imgClass + ' replaced-svg');
+                }
+                // Remove any invalid XML tags as per http://validator.w3.org
+                $svg = $svg.removeAttr('xmlns:a');
+                // Check if the viewport is set, else we gonna set it if we can.
+                if (!$svg.attr('viewBox') && $svg.attr('height') && $svg.attr('width')) {
+                    $svg.attr('viewBox', '0 0 ' + $svg.attr('height') + ' ' + $svg.attr('width'))
+                }
+                // Replace image with new SVG
+                $img.replaceWith($svg);
+            }, 'xml');
+        });
+    }, 1000);*/
 </script>
 </html>

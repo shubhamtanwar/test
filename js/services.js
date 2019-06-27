@@ -9,275 +9,307 @@ angular.module('myApp.services', [])
     .factory('unifyedglobal', ['$http', '$rootScope', '$location', function($http, $rootScope, $location) {
         /**************************************************************************************/
 
-        $rootScope.production = true; // Suggests that this codebase is only for staging
-        $rootScope.standaloneApp = true; // Suggests that this codebase is only for staging
+        $rootScope.production = true;
+        $rootScope.standaloneApp = true;
+        $rootScope.environment = 'dev'; // replcae with stage for staging, prod for production
 
-        function fnGetClearpass(config, callBack) {
-            //Skip clearpass API call if password exists
-            if ($rootScope.password) {
-                config.password = $rootScope.password;
-                return callBack(null, config);
-            }
-            //var clearpassEndpoint = "https://qlsso.quicklaunchsso.com/admin/secured/" + qlTenantid + "/api/getClearPass";
-            var clearpassEndpoint = config.clearpassUrl;
-            // call clearpass API
-            $http({
-                url: clearpassEndpoint,
-                method: 'GET',
-                withCredentials: true
-            }).then(function successCallback(res) {
-                if (!res.data) {
-                    console.error("Unkonw error: Clearpass API not executed properly. " + res);
-                    return callBack({
-                        "err": "Couldnt get clearpass from QL"
-                    });
-                }
-                config.password = res.data;
-                return callBack(null, config);
-            }, function errorCallback(err) {
-                console.error(err);
-                return callBack(err);
-            });
+        /**************************************************************************************/
+    function fnGetClearpass(config, callBack) {
+        //Skip clearpass API call if password exists
+        if ($rootScope.password) {
+            config.password = $rootScope.password;
+            return callBack(null, config);
         }
-
-        function handleWebAdapterAuthentication(erpconfig, callBack) {
-            //For webadapter products, need external authentication to webadapter to get valid ticket for calling service APIs
-            var url = erpconfig.middlewareServerUrl + "/services/authenticate/" + $rootScope.user.tenant + "/" + erpconfig.product;
-            //Example: https://kryptosmw.kryptosmobile.com/webadapter2/services/authenticate/SWCC/colleague
-            var data = {};
-            if (window.device) {
-                data = "username=" + erpconfig.username + "&password=" + erpconfig.password;
-            } else {
-                url = "/websimulator/json?url=" + url;
-                data = {
-                    method: "POST",
-                    body: "username=" + erpconfig.username + "&password=" + erpconfig.password
-                };
+        //var clearpassEndpoint =  "https://qlsso.quicklaunchsso.com/admin/secured/" + qlTenantid + "/api/getClearPass";
+        var clearpassEndpoint = $rootScope.idpUrl + "/admin/secured/" + $rootScope.qlTenantId + "/api/getClearPass";
+        console.log("clearpassurl= " + clearpassEndpoint);
+        //var clearpassEndpoint = config.clearpassUrl;
+        // call clearpass API
+        $http({
+            url: clearpassEndpoint,
+            method: 'GET',
+            withCredentials: true
+        }).then(function successCallback(res) {
+            if (!res.data) {
+                console.error("Unkonw error: Clearpass API not executed properly. " + res);
+                return callBack({"err": "Couldnt get clearpass from QL"});
             }
-            $.blockUI();
-            $http.post(url, data).success(function(data, status, headers, config) {
-                $.unblockUI();
-                $rootScope.erpticket[erpconfig.product] = data.ticket;
-                var serviceUrl = erpconfig.middlewareServerUrl + "/services/data/" + $rootScope.user.tenant + "/" + erpconfig.product + erpconfig.endpoint + "?ticket=" + $rootScope.erpticket[erpconfig.product];
-                console.log("Service URL: " + serviceUrl);
-                erpconfig.serviceUrl = serviceUrl;
-                return callBack(null, erpconfig);
-            }).error(function(data, status, headers, config) {
-                $.unblockUI();
-                $rootScope.erpticket[erpconfig.product] = "";
-                return callBack(data);
-            });
-        }
+            $rootScope.password = config.password = res.data;
+            return callBack(null, config);
+        }, function errorCallback(err) {
+            console.error(err);
+            return callBack(err);
+        });
+    }
 
-        function handleBannerAuthentication(erpconfig, callBack) {
-            //For banner products, need external authentication to webadapter to get valid ticket for calling service APIs
-            var url = erpconfig.middlewareServerUrl + "/services/authenticate/login";
-            //Example: https://kryptosda.kryptosmobile.com/kmwda1mwcc/services/authenticate/login
-            var data = {};
-            if (window.device) {
-                data = "username=" + erpconfig.username + "&password=" + erpconfig.password;
-            } else {
-                url = "/websimulator/json?url=" + url;
-                data = {
-                    method: "POST",
-                    body: "username=" + erpconfig.username + "&password=" + erpconfig.password
-                };
-            }
-            $.blockUI();
-            $http.post(url, data).success(function(data, status, headers, config) {
-                $.unblockUI();
-                $rootScope.erpticket[erpconfig.product] = data.ticket;
-                var serviceUrl = erpconfig.middlewareServerUrl + "/services/student" + erpconfig.endpoint + "?ticket=" + $rootScope.erpticket[erpconfig.product];
-                console.log("Service URL: " + serviceUrl);
-                erpconfig.serviceUrl = serviceUrl;
-                return callBack(null, erpconfig);
-            }).error(function(data, status, headers, config) {
-                $.unblockUI();
-                $rootScope.erpticket[erpconfig.product] = "";
-                return callBack(data);
-            });
+    function handleWebAdapterAuthentication(erpconfig, callBack) {
+        //For webadapter products, need external authentication to webadapter to get valid ticket for calling service APIs
+        var url = erpconfig.middlewareServerUrl + "/services/authenticate/" + $rootScope.user.tenant + "/" + erpconfig.product;
+        //Example: https://kryptosmw.kryptosmobile.com/webadapter2/services/authenticate/SWCC/colleague
+        var data = {};
+        if (window.device) {
+            data = "username=" + erpconfig.username + "&password=" + erpconfig.password;
+        } else {
+            url = "/websimulator/json?url=" + url;
+            data = {
+                method: "POST",
+                body: "username=" + erpconfig.username + "&password=" + erpconfig.password
+            };
         }
-
-        function handleBannerOAuthAuthentication(config, callBack) {
-            //For Banner, no need of external authentication, API service call itself would validate and get the service data.
-            $rootScope.erpticket[config.product] = $rootScope.user.accessToken;
-            var serviceUrl = config.middlewareServerUrl + "/services/student/" + config.endpoint + "?ticket=" + $rootScope.erpticket[config.product];
+        $.blockUI();
+        $http.post(url, data).success(function (data, status, headers, config) {
+            $.unblockUI();
+            $rootScope.erpticket[erpconfig.product] = data.ticket;
+            var serviceUrl = erpconfig.middlewareServerUrl + "/services/data/" + $rootScope.user.tenant + "/" + erpconfig.product + erpconfig.endpoint + "?ticket=" + $rootScope.erpticket[erpconfig.product];
             console.log("Service URL: " + serviceUrl);
-            config.serviceUrl = serviceUrl;
-            return callBack(null, config);
-        }
+            erpconfig.serviceUrl = serviceUrl;
+            return callBack(null, erpconfig);
+        }).error(function (data, status, headers, config) {
+            $.unblockUI();
+            $rootScope.erpticket[erpconfig.product] = "";
+            return callBack(data);
+        });
+    }
 
-        function setupDemoServiceEndpoints(config, callBack) {
-            if (config.product.toLowerCase() == "banner") {
-                config.serviceUrl = config.middlewareServerUrl + "/services/student" + config.endpoint;
-            } else if (config.product.toLowerCase() == "ps") {
-                config.serviceUrl = config.middlewareServerUrl + "/services/data/" + $rootScope.user.tenant + "/" + config.product + config.endpoint;
-            }
-            return callBack(null, config);
-        }
+    function handleBannerAuthentication(erpconfig, callBack) {
+        //For banner products, need external authentication to webadapter to get valid ticket for calling service APIs
+        var url = erpconfig.middlewareServerUrl + "/services/authenticate/login";
+        //Example: https://kryptosda.kryptosmobile.com/kmwda1mwcc/services/authenticate/login
+        var data = {};
+        //if (window.device) {
+        data = "username=" + erpconfig.username + "&password=" + erpconfig.password;
+        //} else {
+        //  url = "/websimulator/json?url=" + url;
+        //  data = {
+        //    method: "POST",
+        //    body: "username=" + erpconfig.username + "&password=" + erpconfig.password
+        //  };
+        //}
+        $.blockUI();
+        $http.post(url, data).success(function (data, status, headers, config) {
+            $.unblockUI();
+            $rootScope.erpticket[erpconfig.product] = data.ticket;
+            var serviceUrl = erpconfig.middlewareServerUrl + "/services/student" + erpconfig.endpoint + "?ticket=" + $rootScope.erpticket[erpconfig.product];
+            console.log("Service URL: " + serviceUrl);
+            erpconfig.serviceUrl = serviceUrl;
+            return callBack(null, erpconfig);
+        }).error(function (data, status, headers, config) {
+            $.unblockUI();
+            $rootScope.erpticket[erpconfig.product] = "";
+            return callBack(data);
+        });
+    }
 
-        function setupServiceEndpoints(config, callBack) {
-            if (config.product.toLowerCase() == "banner") {
-                config.serviceUrl = config.middlewareServerUrl + "/services/student" + config.endpoint + "?ticket=" + $rootScope.erpticket[config.product];
-            } else if (config.product.toLowerCase() == "ps") {
+    function handleBannerOAuthAuthentication(config, callBack) {
+        //For Banner, no need of external authentication, API service call itself would validate and get the service data.
+        $rootScope.erpticket[config.product] = $rootScope.user.accessToken;
+        var serviceUrl = config.middlewareServerUrl + "/services/student/" + config.endpoint + "?ticket=" + $rootScope.erpticket[config.product];
+        console.log("Service URL: " + serviceUrl);
+        config.serviceUrl = serviceUrl;
+        return callBack(null, config);
+    }
+
+    function setupDemoServiceEndpoints(config, callBack) {
+        if (config.product.toLowerCase() == "banner") {
+            config.serviceUrl = config.middlewareServerUrl + "/services/student" + config.endpoint;
+        } else if (config.product.toLowerCase() == "ps") {
+            config.serviceUrl = config.middlewareServerUrl + "/services/data/" + $rootScope.user.tenant + "/" + config.product + config.endpoint;
+        }
+        return callBack(null, config);
+    }
+
+    function setupServiceEndpoints(config, callBack) {
+        if (!config.middlewareServerUrl) {
+            console.error("Middleware server URL not mentioned for the applet !");
+        }
+        if (config.product && config.product.toLowerCase() == "banner") {
+            config.serviceUrl = config.middlewareServerUrl + "/services/student" + config.endpoint + "?ticket=" + $rootScope.erpticket[config.product];
+        } else if (config.product && config.product.toLowerCase() == "ps") {
+            if (config.demoMode) {
+                config.serviceUrl = config.middlewareServerUrl + "/" + config.product.toLowerCase() + config.endpoint + "?ticket=" + $rootScope.erpticket[config.product];
+            } else {
                 config.serviceUrl = config.middlewareServerUrl + "/services/data/" + $rootScope.user.tenant + "/" + config.product + config.endpoint + "?ticket=" + $rootScope.erpticket[config.product];
             }
-            return callBack(null, config);
+        } else if (!config.product) {
+            console.error("Product name not mentioned for the applet !");
         }
+        return callBack(null, config);
+    }
 
-        function erpConnect(config, callBack) {
-            config.username = $rootScope.username;
-            // Remove the query parameters in case of demo mode
-            if (config.demoMode) {
-                var tempParamExists = config.endpoint.indexOf("=");
-                var tempUrl = "";
-                if (tempParamExists > 0) {
-                    config.endpoint = config.endpoint.substring(0, config.endpoint.lastIndexOf("/"));
-                }
-                setupDemoServiceEndpoints(config, function(err, config) {
-                    return callBack(err, config);
-                });
-            } else {
-                if (config.product.toLowerCase() == "banner") {
-                    if (config.tokenType == "oauth") {
-                        handleBannerOAuthAuthentication(config, function(err, config) {
-                            return callBack(err, config);
-                        });
-                    } else {
-                        config.clearpassUrl = $rootScope.qlClearPassUrl;
-                        fnGetClearpass(config, function(err, config) {
-                            if (!err) {
-                                handleBannerAuthentication(config, function(err, config) {
-                                    return callBack(err, config);
-                                });
-                            }
-                            return callBack(err, config);
-                        });
-                    }
-                } else if (config.product.toLowerCase() == "ps") {
+    function erpConnect(config, callBack) {
+        config.username = $rootScope.username;
+        // Remove the query parameters in case of demo mode
+        if (config.demoMode) {
+            var tempParamExists = config.endpoint.indexOf("=");
+            var tempUrl = "";
+            if (tempParamExists > 0) {
+                config.endpoint = config.endpoint.substring(0, config.endpoint.lastIndexOf("/"));
+            }
+            setupDemoServiceEndpoints(config, function (err, config) {
+                return callBack(err, config);
+            });
+        } else {
+            if (config.product.toLowerCase() == "banner") {
+                if (config.tokenType == "oauth") {
+                    handleBannerOAuthAuthentication(config, function (err, config) {
+                        return callBack(err, config);
+                    });
+                } else {
                     config.clearpassUrl = $rootScope.qlClearPassUrl;
-                    fnGetClearpass(config, function(err, config) {
+                    fnGetClearpass(config, function (err, config) {
                         if (!err) {
-                            handleWebAdapterAuthentication(config, function(err, config) {
+                            handleBannerAuthentication(config, function (err, config) {
                                 return callBack(err, config);
                             });
                         }
                         return callBack(err, config);
                     });
                 }
-            }
-        }
-
-        function executeServiceAPI(erpconfig, method, counter, callBack) {
-            setupServiceEndpoints(erpconfig, function(err, erpconfig) {
-                var serviceUrl = erpconfig.serviceUrl;
-                console.log(serviceUrl);
-                var url = "";
-                var proxyMethod = method;
-                var proxyData = {};
-                if (window.device) {
-                    url = serviceUrl;
-                } else {
-                    url = "/websimulator/json?url=" + encodeURIComponent(serviceUrl);
-                    proxyMethod = "POST";
-                    proxyData = {
-                        method: method
-                    }
-                    if (method == "POST") {
-                        proxyData = {
-                            method: "POST",
-                            body: erpconfig.postdata
-                        }
-                        if (erpconfig.demoMode) {
-                            proxyData = "";
-                            url = serviceUrl;
-                        }
-                    }
-                }
-                counter++;
-                $http({
-                    method: proxyMethod,
-                    url: url,
-                    data: proxyData
-                }).
-                success(function(data, status, headers, config) {
-                    console.log("RESULTS:");
-                    console.log(data);
-                    callBack(erpconfig, data, status, headers, config);
-                }).
-                error(function(data, status, headers, config) {
-                    if (status == 403 && counter <= 2) {
-                        // ticket expired, need to reauthenticate
-                        erpConnect(erpconfig, function(err, erpconfig) {
-                            if (err) {
-                                $.unblockUI();
-                                console.log("Couldnt execute API due to errors.");
-                                return callback();
-                            }
-                            executeServiceAPI(erpconfig, method, counter, callBack);
+            } else if (config.product.toLowerCase() == "ps") {
+                config.clearpassUrl = $rootScope.qlClearPassUrl;
+                fnGetClearpass(config, function (err, config) {
+                    if (!err) {
+                        handleWebAdapterAuthentication(config, function (err, config) {
+                            return callBack(err, config);
                         });
                     }
+                    return callBack(err, config);
+                });
+            }
+        }
+    }
+
+    function executeServiceAPI(erpconfig, method, counter, callBack) {
+        setupServiceEndpoints(erpconfig, function (err, erpconfig) {
+            var serviceUrl = erpconfig.serviceUrl;
+            console.log(serviceUrl);
+            var url = "";
+            var proxyMethod = method;
+            var proxyData = {};
+            if (window.device) {
+                url = serviceUrl;
+            } else {
+                url = "/websimulator/json?url=" + encodeURIComponent(serviceUrl);
+                proxyMethod = "POST";
+                proxyData = {
+                    method: method
+                }
+                if (method == "POST") {
+                    proxyData = {
+                        method: "POST",
+                        body: erpconfig.postdata
+                    }
+                    if (erpconfig.demoMode) {
+                        proxyData = "";
+                        url = serviceUrl;
+                    }
+                }
+            }
+            counter++;
+            $http({
+                method: proxyMethod,
+                url: url,
+                data: proxyData
+            }).success(function (data, status, headers, config) {
+                console.log("RESULTS:");
+                console.log(data);
+                callBack(erpconfig, data, status, headers, config);
+            }).error(function (data, status, headers, config) {
+                if (status == 403 && counter <= 2) {
+                    // ticket expired, need to reauthenticate
+                    erpConnect(erpconfig, function (err, erpconfig) {
+                        if (err) {
+                            $.unblockUI();
+                            console.log("Couldnt execute API due to errors.");
+                            return callback();
+                        }
+                        return executeServiceAPI(erpconfig, method, counter, callBack);
+                    });
+                } else {
                     return callBack(erpconfig, data, status, headers, config);
+                }                
+            });
+        });
+
+    }
+
+    function validateConfigObject(config) {
+        if (!config.middlewareServerUrl) {
+            console.error("Middleware Server URL not mentioned for applet !");
+            return false;
+        }
+        if (!config.product) {
+            console.error("Product name not mentioned for applet !");
+            return false;
+        }
+        if (!config.endpoint) {
+            console.error("API endpoint not mentioned !");
+            return true;
+        }
+        return true;
+    }
+
+    $rootScope.postAPI = function (config, endpoint, postdata, callback) {
+        config.endpoint = endpoint;
+        config.postdata = postdata;
+        config.demoMode = (config.middlewareServerUrl == "https://kryptosda.kryptosmobile.com/kryptosds") ? true : false;
+        if (!validateConfigObject(config)) {
+            return callback();
+        }        
+        $.blockUI();
+        if ($rootScope.demoMode || (!$rootScope.demoMode && $rootScope.erpticket && $rootScope.erpticket[config.product]) ) {
+            executeServiceAPI(config, "POST", 1, function (erpconfig, data, status, headers, config) {
+                $.unblockUI();
+                return callback(data, status, headers, config);
+            });
+        } else {
+            if (!$rootScope.erpticket) {
+                $rootScope.erpticket = {};
+            }
+            erpConnect(config, function (err, config) {
+                if (err) {
+                    console.log("Couldnt execute API due to errors.");
+                    $.unblockUI();
+                    return callback();
+                }
+                executeServiceAPI(config, "POST", 1, function (erpconfig, data, status, headers, config) {
+                    $.unblockUI();
+                    return callback(data, status, headers, config);
                 });
             });
-
         }
+    };
 
-        $rootScope.postAPI = function(config, endpoint, postdata, callback) {
-            config.endpoint = endpoint;
-            config.postdata = postdata;
-            config.demoMode = (config.middlewareServerUrl == "https://kryptosda.kryptosmobile.com/kryptosds") ? true : false;
-            $.blockUI();
-            if (!$rootScope.demoMode && $rootScope.erpticket && $rootScope.erpticket[config.product]) {
-                executeServiceAPI(config, "POST", 1, function(erpconfig, data, status, headers, config) {
+
+    $rootScope.getAPI = function (config, endpoint, callback) {
+        config.endpoint = endpoint;
+        config.demoMode = (config.middlewareServerUrl == "https://kryptosda.kryptosmobile.com/kryptosds") ? true : false;
+        if (!validateConfigObject(config)) {
+            return callback();
+        }        
+        $.blockUI();
+        if ($rootScope.demoMode || ( !$rootScope.demoMode && $rootScope.erpticket && $rootScope.erpticket[config.product]) ) {
+            executeServiceAPI(config, "GET", 1, function (erpconfig, data, status, headers, config) {
+                $.unblockUI();
+                return callback(data, status, headers, config);
+            });
+        } else {
+            if (!$rootScope.erpticket) {
+                $rootScope.erpticket = {};
+            }
+            erpConnect(config, function (err, config) {
+                if (err) {
+                    console.error("Couldnt execute API due to errors.");
+                    $.unblockUI();
+                    return callback();
+                }
+                executeServiceAPI(config, "POST", 1, function (erpconfig, data, status, headers, config) {
                     $.unblockUI();
                     return callback(data, status, headers, config);
                 });
-            } else {
-                if (!$rootScope.erpticket) {
-                    $rootScope.erpticket = {};
-                }
-                erpConnect(config, function(err, config) {
-                    if (err) {
-                        console.log("Couldnt execute API due to errors.");
-                        $.unblockUI();
-                        return callback();
-                    }
-                    executeServiceAPI(config, "POST", 1, function(erpconfig, data, status, headers, config) {
-                        $.unblockUI();
-                        return callback(data, status, headers, config);
-                    });
-                });
-            }
-        };
-
-
-        $rootScope.getAPI = function(config, endpoint, callback) {
-            config.endpoint = endpoint;
-            config.demoMode = (config.middlewareServerUrl == "https://kryptosda.kryptosmobile.com/kryptosds") ? true : false;
-            $.blockUI();
-            if (!$rootScope.demoMode && $rootScope.erpticket && $rootScope.erpticket[config.product]) {
-                executeServiceAPI(config, "GET", 1, function(erpconfig, data, status, headers, config) {
-                    $.unblockUI();
-                    return callback(data, status, headers, config);
-                });
-            } else {
-                if (!$rootScope.erpticket) {
-                    $rootScope.erpticket = {};
-                }
-                erpConnect(config, function(err, config) {
-                    if (err) {
-                        console.log("Couldnt execute API due to errors.");
-                        $.unblockUI();
-                        return callback();
-                    }
-                    executeServiceAPI(config, "POST", 1, function(erpconfig, data, status, headers, config) {
-                        $.unblockUI();
-                        return callback(data, status, headers, config);
-                    });
-                });
-            }
-        };
+            });
+        }
+    };
         /******************************************************************************************************************************************/
 
         $rootScope.userNameIntialsColor = ['#36B37E', '#FF5630', '#FFAB00', '#8d99ae', '#50939b', '#de4d78', '#bc59cf', '#0f5772', '#7d7e7d', '#4fb443', '#596fef', '#00b8ff'];
@@ -320,6 +352,15 @@ angular.module('myApp.services', [])
                     setTimeout(function() {
                         $('.modale').addClass('opened');
                     }, 1000)
+                }else{
+                    if(data.title == 'BlueLight Tracking Alert'){
+                       
+                      var mdata =  data.message;                                     
+                      var href =  "/app/BlueLightEmergency32/BlueLightEmergency32";
+                                                                                    
+                      $location.path(href).search({email: data.trackEmail});
+                     
+                    }
                 }
             });
         }
@@ -340,7 +381,9 @@ angular.module('myApp.services', [])
                         'Accept': 'application/json',
                         'Authorization': 'Bearer ' + $rootScope.user.accessToken,
                         'X-TENANT-ID': $rootScope.user.tenant,
-                        'X-TENANT-DOMAIN': $rootScope.user.tenantdomain
+                        'X-TENANT-DOMAIN': $rootScope.user.tenantdomain,
+                        'principal-user': $rootScope.user.email,
+                        'site-id': $rootScope.user.siteId
                     },
                     data: data,
                     json: true
@@ -375,12 +418,12 @@ angular.module('myApp.services', [])
                 return callback();
             }
         }
-        $rootScope.refreshToken = function(url, method, data, callback) {
-
+        
+        $rootScope.refreshToken = function (url, method, apidata, callback) {
             $.blockUI();
             var refreshUrl = $rootScope.GatewayUrl + "/unifydidentity/open/oauth2/token";
-            var data = "refresh_token=" + $rootScope.user.refreshToken;
-
+            //var data = "refresh_token=" + $rootScope.user.refreshToken;
+            var data = 'username=' + $.jStorage.get("unifyedusername") + '&password=' + $.jStorage.get("unifyedpassword");
             var req = {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -391,15 +434,16 @@ angular.module('myApp.services', [])
                 data: data,
                 json: true
             }
-
             $http(req).then(function successCallback(res) {
                 var data = res.data;
+                console.log('beforeRefresh', $rootScope.user);
                 $rootScope.user['accessToken'] = data.access_token;
                 $rootScope.user['refreshToken'] = data.refresh_token;
                 $rootScope.user['providerData'] = data.access_token;
-
+                console.log('afterRefresh', $rootScope.user);
+                $.jStorage.set('user', $rootScope.user);
                 $.jStorage.set('userToken', res.data);
-                $rootScope.callAPI(url, method, data, callback);
+                $rootScope.callAPI(url, method, apidata, callback);
                 $.unblockUI();
             }, function errorCallback(err) {
                 console.log(err);
@@ -429,6 +473,41 @@ angular.module('myApp.services', [])
             });
 
         };
+
+
+        $rootScope.getNotificationBadgeMobile = function() {
+            $rootScope.notificationcentre = $rootScope.notificationcentre || {}
+            if (!$rootScope.GatewayUrl || !$rootScope.user || !$rootScope.user.accessToken || !$rootScope.user.email) {
+              setTimeout(function() {
+                $rootScope.getNotificationBadgeMobile();
+              }, 500);
+              return true;
+            }
+        
+            var headers = {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': 'Bearer ' + $rootScope.user.accessToken,
+              'X-TENANT-ID': $rootScope.user.tenant,
+              'X-TENANT-DOMAIN': $rootScope.user.tenantdomain,
+              'principal-user': $rootScope.username,
+              'X-USER-EMAIL': $rootScope.user.email
+            }
+            if ($rootScope.site && $rootScope.site._id) headers['site-id'] = $rootScope.site._id;
+            var url = $rootScope.GatewayUrl + '/unifyed-notificationcentre/v1/notifications/count?type=sent';
+            $http({
+              method: 'GET',
+              url: url,
+              headers: headers
+            }).then(function successCallback(response) {
+              $rootScope.notificationcentre.badge = (response && response.data && response.data.data) || 0;
+              try {
+                $rootScope.$apply();
+              } catch (ex) {}
+            }, function errorCallback(error) {
+              console.log("in callAPI, URL : " + url + " : error status=" + error.status);
+            });
+          };
     }]);
 
 /*****************End for Services for unifyed applets (whatsUp, messaging etc) *********************************/
