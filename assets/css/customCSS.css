@@ -2843,8 +2843,9 @@ img.filledIcon16:hover {
 .scrollable-content{
   position: fixed;
 }
+
 .userLoginIcon{
-   margin: 15px 15px 0 0;
+    margin: 15px 15px 0 0;
 }
 
 .menuGrid_Main .gridNavigationContainer .gridAppItem {

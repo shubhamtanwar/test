@@ -449,12 +449,12 @@ controller('MyCtrl1', [function() {
                         MyCampusApp.checkAndUpdateMetadata(tenant, baseUrl, $http, $rootScope.metadata.version, $route,
                             $rootScope, $scope, $sce, logosDirPath, $compile);
                     } else {
-                      /*  $rootScope.updateCheck = function() {
+                        /*$rootScope.updateCheck = function() {
                             MyCampusApp.checkAndUpdateMetadata(tenant, baseUrl, $http, -1, $route, $rootScope, $scope, $sce, logosDirPath, $compile);
                         };
-                        MyCampusApp.checkAndUpdateMetadata(tenant, baseUrl, $http, -1, $route, $rootScope, $scope, $sce, logosDirPath, $compile); 
-						*/
-                    }
+                        MyCampusApp.checkAndUpdateMetadata(tenant, baseUrl, $http, -1, $route, $rootScope, $scope, $sce, logosDirPath, $compile);
+                      */
+				   }
                 };
 
                 var onFileSystemSuccess = function(fileSystem) {

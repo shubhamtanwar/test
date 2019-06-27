@@ -164,16 +164,8 @@
             <div ng-repeat="ag in appgroups">
                 <div ng-repeat="app in ag.apps" ng-if="app.showInDock" class="applet{{app.id}}">
 
-                    <span class="badge DockBadgeIcon" ng-if="app.name == 'Notification290' && notificationcentre && notificationcentre.badge" id="notificationBubble">
-                        {{(notificationcentre && notificationcentre.badge && notificationcentre.badge <= 9 && notificationcentre.badge) || notificationcentre && notificationcentre.badge && notificationcentre.badge > 9 && 9 }}<i class="fa fa-plus font8" ng-if="notificationcentre.badge > 9"></i>
-                    </span>  
-
-                    <!-- <a aria-label="{{app.displayname}}" href="#/app/{{app.name}}/{{app.name}}">
+                    <a aria-label="{{app.displayname}}" href="#/app/{{app.name}}/{{app.name}}">
                     <img ng-src="{{app.logo}}"/>
-                    </a> -->
-            
-            <a aria-label="{{app.displayname}}" href="#/app/{{app.name}}/{{app.name}}">
-                <img ng-src="{{app.logo}}"/>
             </a>
                 </div>
                 <div class="clearfix"></div>
@@ -294,16 +286,6 @@
         text-align: center;
         margin: auto;
         font-size: 14px;
-    }
-
-    .DockBadgeIcon{
-        position: absolute;
-        top: 4px;
-        width: 20px;
-        height: 20px;
-        padding: 0px 7px;
-        line-height: 20px;
-        background: red;
     }
 </style>
 <script type="text/javascript">
