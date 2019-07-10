@@ -295,9 +295,9 @@
           "channelsList": 
           [
             {
-              "role": "public",
               "channelId": "UCzwCdqmP075lBKS4004a3QA",
-              "label": "Youtube"
+              "label": "Youtube",
+              "role": "public"
             }
           ]
         },
@@ -405,8 +405,8 @@
           "newsFeeds": 
           [
             {
-              "feedUrl": "https://www.camdencc.edu/events/",
               "label": "new and events",
+              "feedUrl": "https://www.camdencc.edu/events/",
               "role": "Public"
             }
           ]
